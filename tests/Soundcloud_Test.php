@@ -1,4 +1,13 @@
 <?php
+
+/**
+ *  Run the test from within the tests directory
+ *  
+ *  
+ */
+
+require "../vendor/autoload.php";
+
 require_once 'Soundcloud_Test_Helper.php';
 
 class Soundcloud_Test extends PHPUnit_Framework_TestCase {
@@ -6,7 +15,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     protected $soundcloud;
 
     function setUp() {
-        $this->soundcloud = new Services_Soundcloud_Expose(
+        $this->soundcloud = new \PHPSoundcloud\Expose(
             '1337',
             '1337',
             'http://soundcloud.local/callback'
@@ -22,7 +31,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testVersionFormat() {
         self::assertRegExp(
             '/^[0-9]+\.[0-9]+\.[0-9]+$/',
-            (string)new Services_Soundcloud_Version
+            (string)new \PHPSoundCloud\Version
         );
     }
 
@@ -56,7 +65,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         }
 
         foreach ($unsupportedExtensions as $extension => $mimeType) {
-            $this->setExpectedException('Services_Soundcloud_Unsupported_Audio_Format_Exception');
+            $this->setExpectedException('\PHPSoundcloud\Exception\UnsupportedAudioFormat');
 
             $this->soundcloud->getAudioMimeType($extension);
         }
@@ -142,7 +151,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     function testSetResponseFormatHtml() {
-        $this->setExpectedException('Services_Soundcloud_Unsupported_Response_Format_Exception');
+        $this->setExpectedException('\PHPSoundcloud\Exception\UnsupportedResponseFormat');
 
         $this->soundcloud->setResponseFormat('html');
     }
@@ -277,13 +286,13 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     function testSoundcloudMissingConsumerKeyException() {
-        $this->setExpectedException('Services_Soundcloud_Missing_Client_Id_Exception');
+        $this->setExpectedException('\PHPSoundcloud\Exception\MissingClientId');
 
-        $soundcloud = new Services_Soundcloud('', '');
+        $soundcloud = new PHPSoundcloud\Api('', '');
     }
 
     function testSoundcloudInvalidHttpResponseCodeException() {
-        $this->setExpectedException('Services_Soundcloud_Invalid_Http_Response_Code_Exception');
+        $this->setExpectedException('\PHPSoundcloud\Exception\InvalidHttpResponseCode');
 
         $this->soundcloud->get('me');
     }
@@ -294,7 +303,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testSoundcloudInvalidHttpResponseCode($expectedHeaders) {
         try {
             $this->soundcloud->get('me');
-        } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+        } catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
             self::assertEquals(
                 '{"error":"401 - Unauthorized"}',
                 $e->getHttpBody()
@@ -302,7 +311,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
 
             self::assertEquals(401, $e->getHttpCode());
 
-            foreach ($expectedHeaders as $key => $val) {
+            foreach ($expectedHeaders as $key => $val) { echo $key;
                 self::assertEquals(
                     $val,
                     $this->soundcloud->getHttpHeader($key)

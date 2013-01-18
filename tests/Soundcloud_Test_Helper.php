@@ -1,4 +1,5 @@
 <?php
+/*
 set_include_path(
     get_include_path()
     . PATH_SEPARATOR
@@ -6,7 +7,9 @@ set_include_path(
 );
 
 require_once 'Services/Soundcloud.php';
+*/
 
+namespace PHPSoundCloud;
 /**
  * Extended class of the Soundcloud class in order to expose protected methods
  * for testing.
@@ -18,7 +21,7 @@ require_once 'Services/Soundcloud.php';
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Services_Soundcloud_Expose extends Services_Soundcloud {
+class Expose extends Api {
 
     /**
      * Class constructor. See parent constructor for further reference.
