@@ -12,7 +12,32 @@ The wrapper got a real overhaul with version 2.0. The current version was writte
 
 ## Getting started
 
-Check out the [getting started](https://github.com/mptre/php-soundcloud/wiki/OAuth-2) wiki entry for further reference on how to get started. Also make sure to check out the [demo application](https://github.com/mptre/ci-soundcloud) for some example code.
+Install composer in your project:
+``` bash
+curl -s https://getcomposer.org/installer | php
+```
+
+Create a ```composer.json``` file in your project root:
+
+``` json
+{
+    "require": {
+        "audioio/php-soundcloud": "master"
+    }
+}
+```
+
+Make sure the Soundcloud\Api class is included in your application. If you've used [Composer](http://getcomposer.org), all you need do is include the automatically generated autoloader... something like...
+
+``` php
+include('vendor/autoload.php');
+```
+
+Also check out Anton Lindqvist's original [getting started](https://github.com/mptre/php-soundcloud/wiki/OAuth-2) wiki entry for further reference on how to get started. However, because my fork has been altered to be PSR-0 compliant and fully namespaced, you'll need to figure out the differences. The main one would be instantiating the Soundcloud client:
+
+```php
+$soundcloud = new \PHPSoundCloud\Api('yourClientId', 'yourClientSecret', 'yourRedirectUri');
+```
 
 
 ## Examples
@@ -27,7 +52,7 @@ Ofcourse you need to handle the authentication first before being able to reques
 <?php
 try {
     $response = json_decode($soundcloud->get('me'), true);
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
     exit($e->getMessage());
 }
 ```
@@ -51,7 +76,7 @@ try {
         ),
         true
     );
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
     exit($e->getMessage());
 }
 ```
@@ -75,7 +100,7 @@ try {
         ),
         true
     );
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
     exit($e->getMessage());
 }
 ```
@@ -86,7 +111,7 @@ try {
 <?php
 try {
     $response = json_decode($soundcloud->delete('tracks/1'), true);
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
     exit($e->getMessage());
 }
 ```
@@ -103,7 +128,7 @@ $track = array(
     
 try {
     $response = $soundcloud->post('tracks', $track);
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCoden $e) {
     exit($e->getMessage());
 }
 ```
@@ -114,7 +139,7 @@ try {
 <?php
 try {
     $track = $soundcloud->download(1337);
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
     exit($e->getMessage());
 }
 
@@ -133,7 +158,7 @@ $optionalFields = array('title' => 'My awesome playlist');
 
 try {
     $playlist = $soundcloud->updatePlaylist($playlistId, $trackIds, $optionalFields);
-} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+} catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
     exit($e->getMessage());
 }
 ```

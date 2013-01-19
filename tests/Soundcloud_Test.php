@@ -212,7 +212,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->soundcloud->setAccessToken('1337');
 
         self::assertEquals(
-            array('Accept: application/json', 'Authorization: OAuth 1337'),
+            array('Accept: application/json', 'WWW-Authorization: OAuth 1337'),
             $this->soundcloud->buildDefaultHeaders()
         );
     }
@@ -300,18 +300,18 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     /**
      * @dataProvider dataProviderSoundcloudInvalidHttpResponseCode
      */
-    function testSoundcloudInvalidHttpResponseCode($expectedHeaders) {
+    function testSoundcloudInvalidHttpResponseCode($expectedBody, $expectedHeaders) {
         try {
             $this->soundcloud->get('me');
         } catch (\PHPSoundcloud\Exception\InvalidHttpResponseCode $e) {
             self::assertEquals(
-                '{"error":"401 - Unauthorized"}',
+                $expectedBody,
                 $e->getHttpBody()
             );
 
             self::assertEquals(401, $e->getHttpCode());
 
-            foreach ($expectedHeaders as $key => $val) { echo $key;
+            foreach ($expectedHeaders as $key => $val) {
                 self::assertEquals(
                     $val,
                     $this->soundcloud->getHttpHeader($key)
@@ -343,15 +343,16 @@ HEADERS;
     }
 
     static function dataProviderSoundcloudInvalidHttpResponseCode() {
+        $expectedBody = '{"errors":[{"error_message":"401 - Unauthorized"}]}';
         $expectedHeaders = array(
             'server' => 'nginx',
             'content_type' => 'application/json; charset=utf-8',
             'connection' => 'keep-alive',
             'cache_control' => 'no-cache',
-            'content_length' => '30'
+            'content_length' => strlen($expectedBody)
         );
 
-        return array(array($expectedHeaders));
+        return array(array($expectedBody, $expectedHeaders));
     }
 
 }

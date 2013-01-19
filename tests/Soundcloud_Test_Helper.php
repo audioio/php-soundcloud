@@ -10,6 +10,7 @@ require_once 'Services/Soundcloud.php';
 */
 
 namespace PHPSoundCloud;
+
 /**
  * Extended class of the Soundcloud class in order to expose protected methods
  * for testing.
